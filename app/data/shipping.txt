@@ -1,0 +1,15 @@
+ShopFlow Shipping
+
+Standard shipping usually takes 3 to 5 business days.
+
+Express shipping usually takes 1 to 2 business days.
+
+Shipping time starts after the order has been confirmed and prepared for shipment.
+
+Customers receive a tracking number after the order has been shipped.
+
+Tracking information is available in the Orders section.
+
+ShopFlow currently delivers to countries supported by the customer's selected shipping address.
+
+Shipping fees depend on the destination and shipping method.

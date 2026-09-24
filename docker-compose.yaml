@@ -1,0 +1,12 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434/v1
+    env_file:
+      - .env
+    container_name: fastapi-api
+    ports:
+      - '8000:80'

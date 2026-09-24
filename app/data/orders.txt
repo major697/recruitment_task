@@ -1,0 +1,20 @@
+ShopFlow Orders
+
+Customers can cancel an order as long as the order has not entered the shipping process.
+
+Orders that are already being prepared for shipment cannot be cancelled through the customer dashboard.
+
+If an order cannot be cancelled, the customer can wait until delivery and then use the return process.
+
+Customers can view the current status of their order in the Orders section of the ShopFlow dashboard.
+
+Order statuses include:
+- Pending
+- Confirmed
+- Processing
+- Preparing for shipment
+- Shipped
+- Delivered
+- Cancelled
+
+A cancelled order does not generate a shipping charge.

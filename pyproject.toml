@@ -1,0 +1,15 @@
+[project]
+name = "recruitment-task"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "dotenv>=0.9.9",
+    "fastapi[standard]>=0.141.1",
+    "openai>=3.16.2",
+    "pathlib>=1.0.1",
+    "pydantic>=2.13.5",
+    "sentence-transformers>=6.0.1",
+    "uvicorn>=0.53.0",
+]

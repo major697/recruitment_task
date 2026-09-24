@@ -1,0 +1,15 @@
+ShopFlow Payments
+
+ShopFlow supports credit cards, debit cards and PayPal.
+
+Credit card payments are authorized immediately after checkout.
+
+If payment authorization fails, the order remains in Pending status.
+
+Customers are not charged when payment authorization fails.
+
+For successful credit card payments, the amount is captured when the order is confirmed.
+
+Refunds are returned to the original payment method.
+
+Credit card refunds usually appear within 3 to 7 business days.

@@ -1,0 +1,15 @@
+ShopFlow Returns
+
+Customers can return most products within 30 days after delivery.
+
+Products must generally be unused and returned in their original packaging.
+
+Some products may be excluded from the return policy for hygiene or regulatory reasons.
+
+Customers can start a return from the Orders section.
+
+After a return request is approved, ShopFlow provides return instructions.
+
+Refunds are processed after the returned product has been received and inspected.
+
+The refund is sent to the original payment method.

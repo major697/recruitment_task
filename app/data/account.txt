@@ -1,0 +1,11 @@
+ShopFlow Account
+
+Customers can change their email address from Account Settings.
+
+Changing the email address requires confirmation of the new email address.
+
+Customers can reset their password using the Forgot Password functionality.
+
+Password reset links expire after 30 minutes.
+
+Customers should contact ShopFlow support if they lose access to both their account and recovery email address.
