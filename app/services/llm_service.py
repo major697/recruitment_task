@@ -1,15 +1,11 @@
 from openai import OpenAI
-from settings import settings
+
 from app.schema.ask_schema import AskResponseSchema, ChunkSimilaritySchema
 
 
 class LlmService:
-    def __init__(self):
-        self.openai = OpenAI(
-            base_url=settings.ollama_base_url,
-            api_key=settings.ollama_api_key,
-        )
-
+    def __init__(self, openai: OpenAI) -> None:
+        self.openai = openai
 
     def generate_answer(self, query: str, similarity_text: list[ChunkSimilaritySchema]) -> AskResponseSchema:
         document_format = "\n\n".join([f"File name: {document.file_name} | Document text: {document.text}" for document in similarity_text])

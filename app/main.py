@@ -1,15 +1,31 @@
+from contextlib import asynccontextmanager
 from typing import Annotated
 
 from dotenv import load_dotenv
-from fastapi import Body, FastAPI, HTTPException
+from fastapi import Body, Depends, FastAPI, HTTPException
+from openai import OpenAI
+from sentence_transformers import SentenceTransformer
 
+from app.core.container import AppContainer
+from app.core.deps import get_llm_service, get_similarity_text_service
+from app.models.model import ModelEnum
 from app.schema.ask_schema import AskRequestSchema, AskResponseSchema
-from app.services.ask_service import SimilarityTextService
+from app.services.similarity_text_service import SimilarityTextService
 from app.services.llm_service import LlmService
+from app.settings import settings
+
 
 load_dotenv()
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    sentence_transformer = SentenceTransformer(ModelEnum.EMBEDDING_MODEL.value)
+    openai = OpenAI(base_url=settings.ollama_base_url, api_key=settings.ollama_api_key)
+    app.state.container = AppContainer(sentence_transformer=sentence_transformer, openai=openai)
+    yield
+    app.state.container.openai.close()
+
+app = FastAPI(lifespan=lifespan)
 
 
 @app.get("/health")
@@ -20,17 +36,11 @@ async def health() -> dict[str, str]:
 @app.post("/ask", description="Ask LLM")
 async def ask_question(payload: Annotated[
         AskRequestSchema,
-        Body(
-            examples=[
-                {
-                    "query": "How can I return a purchased product?"
-                }
-            ],
-        ),
-    ]) -> AskResponseSchema:
+        Body(examples=[{"query": "How can I return a purchased product?"}]),
+    ],
+    similarity_text_service: SimilarityTextService = Depends(get_similarity_text_service),
+    llm_service: LlmService = Depends(get_llm_service)):
 
-    similarity_text_service = SimilarityTextService()
-    llm_service = LlmService()
 
     if not payload.query:
         raise HTTPException(status_code=404, detail="Query is required.")

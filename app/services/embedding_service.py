@@ -1,15 +1,11 @@
-from typing import Sequence
-
+import numpy as np
 from sentence_transformers import SentenceTransformer
-
-from app.models.model import ModelEnum
 
 
 class EmbeddingService:
-    def __init__(self):
-        self.sentence_transformer = SentenceTransformer(ModelEnum.EMBEDDING_MODEL.value)
-        
+    def __init__(self, sentence_transformer: SentenceTransformer) -> None:
+        self.sentence_transformer = sentence_transformer
 
-    def embedding_text(self, text: list[str] | str):
-        encode_text = self.sentence_transformer.encode(inputs=text)
+    def embedding_text(self, text: list[str]) -> np.ndarray:
+        encode_text = self.sentence_transformer.encode(inputs=text, normalize_embeddings=True)
         return encode_text

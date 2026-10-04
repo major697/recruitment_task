@@ -2,9 +2,6 @@ from pathlib import Path
 
 
 class DocumentService:
-    def __init__(self):
-        pass
-
     @staticmethod
     def read_document(file_path: Path):
         with open(file_path, 'r') as file:
