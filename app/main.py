@@ -1,7 +1,6 @@
 from contextlib import asynccontextmanager
 from typing import Annotated
 
-from dotenv import load_dotenv
 from fastapi import Body, Depends, FastAPI, HTTPException
 from openai import OpenAI
 from sentence_transformers import SentenceTransformer
@@ -17,8 +16,6 @@ from app.services.llm_service import LlmService
 from app.settings import settings
 
 
-load_dotenv()
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     sentence_transformer = SentenceTransformer(ModelEnum.EMBEDDING_MODEL.value)
@@ -26,6 +23,7 @@ async def lifespan(app: FastAPI):
 
     document_service = DocumentService(path_to_file="app/data")
     embedding_service = EmbeddingService(sentence_transformer=sentence_transformer)
+    llm_service = LlmService(openai=openai)
     similarity_text_service = SimilarityTextService(
          embedding_service=embedding_service,
          document_service=document_service
@@ -35,7 +33,8 @@ async def lifespan(app: FastAPI):
         openai=openai,
         embedding_service=embedding_service,
         document_service=document_service,
-        similarity_text_service=similarity_text_service
+        similarity_text_service=similarity_text_service,
+        llm_service=llm_service
     )
     yield
     app.state.container.openai.close()
