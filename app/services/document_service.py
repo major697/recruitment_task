@@ -2,14 +2,17 @@ from pathlib import Path
 
 
 class DocumentService:
-    @staticmethod
-    def read_document(file_path: Path):
-        with open(file_path, 'r') as file:
-            return file.read()
-        return None
+    def __init__(self, path_to_file: str) -> None:
+        self.path = Path(path_to_file)
 
-    @staticmethod
-    def text_splitter(chunk_size: int, chunk_overlap:int, text: str):
+
+    def read_document(self) -> str | None:
+        if not self.path.exists() or not any(self.path.iterdir()):
+            return None
+        with open(self.path, 'r') as file:
+            return file.read()
+
+    def text_splitter(self, chunk_size: int, chunk_overlap:int, text: str):
         text_splitted = text.split()
         step = chunk_size - chunk_overlap
         if step < 1:

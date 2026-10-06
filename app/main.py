@@ -10,6 +10,8 @@ from app.core.container import AppContainer
 from app.core.deps import get_llm_service, get_similarity_text_service
 from app.models.model import ModelEnum
 from app.schema.ask_schema import AskRequestSchema, AskResponseSchema
+from app.services.document_service import DocumentService
+from app.services.embedding_service import EmbeddingService
 from app.services.similarity_text_service import SimilarityTextService
 from app.services.llm_service import LlmService
 from app.settings import settings
@@ -21,7 +23,20 @@ load_dotenv()
 async def lifespan(app: FastAPI):
     sentence_transformer = SentenceTransformer(ModelEnum.EMBEDDING_MODEL.value)
     openai = OpenAI(base_url=settings.ollama_base_url, api_key=settings.ollama_api_key)
-    app.state.container = AppContainer(sentence_transformer=sentence_transformer, openai=openai)
+
+    document_service = DocumentService(path_to_file="app/data")
+    embedding_service = EmbeddingService(sentence_transformer=sentence_transformer)
+    similarity_text_service = SimilarityTextService(
+         embedding_service=embedding_service,
+         document_service=document_service
+    )
+
+    app.state.container = AppContainer(
+        openai=openai,
+        embedding_service=embedding_service,
+        document_service=document_service,
+        similarity_text_service=similarity_text_service
+    )
     yield
     app.state.container.openai.close()
 
@@ -40,15 +55,13 @@ async def ask_question(payload: Annotated[
     ],
     similarity_text_service: SimilarityTextService = Depends(get_similarity_text_service),
     llm_service: LlmService = Depends(get_llm_service)):
+        if not payload.query:
+            raise HTTPException(status_code=404, detail="Query is required.")
 
+        similarity_text = similarity_text_service.get_similarity_file_text(query=payload.query)
 
-    if not payload.query:
-        raise HTTPException(status_code=404, detail="Query is required.")
+        # if similarity_text is None:
+        #     raise HTTPException(status_code=404, detail="No documents information.")
 
-    similarity_text = similarity_text_service.get_similarity_file_text(query=payload.query)
-
-    if similarity_text is None:
-        raise HTTPException(status_code=404, detail="No documents information.")
-
-    generated_answer = llm_service.generate_answer(query=payload.query, similarity_text=similarity_text)
-    return AskResponseSchema(answer=generated_answer.answer, document_name=generated_answer.document_name)
+        # generated_answer = llm_service.generate_answer(query=payload.query, similarity_text=similarity_text)
+        # return AskResponseSchema(answer=generated_answer.answer, document_name=generated_answer.document_name)

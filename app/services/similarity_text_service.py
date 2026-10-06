@@ -1,7 +1,4 @@
-from pathlib import Path
-
 import faiss
-from sentence_transformers import SentenceTransformer
 
 from app.schema.similarity_schema import SimilarityTextSchema
 from app.services.document_service import DocumentService
@@ -9,24 +6,22 @@ from app.services.embedding_service import EmbeddingService
 
 
 class SimilarityTextService:
-    def __init__(self, embedding_service: EmbeddingService, sentence_transformer: SentenceTransformer):
-        self.document_service = DocumentService()
+    def __init__(
+            self,
+            embedding_service: EmbeddingService,
+            document_service: DocumentService
+        ):
         self.embedding_service = embedding_service
-        self.sentence_transformer = sentence_transformer
+        self.document_service = document_service
 
 
     def get_similarity_file_text(self, query: str):
-        path_file = Path('app/data')
-
-        if not path_file.exists() or not any(path_file.iterdir()):
-            return None
-
         embedding_query = self.embedding_service.embedding_text(text=[query])
         result_similarity: list[SimilarityTextSchema] = []
 
         for file_item in path_file.iterdir():
             if file_item.is_file():
-                file_content = self.document_service.read_document(file_item)
+                file_content = self.document_service.read_document()
                 chunks_document = self.document_service.text_splitter(chunk_size=20, chunk_overlap=5, text=file_content)
 
                 if not chunks_document:
