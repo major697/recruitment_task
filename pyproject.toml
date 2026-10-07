@@ -5,12 +5,21 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
-    "dotenv>=0.9.9",
     "faiss-cpu>=1.15.1",
     "fastapi[standard]>=0.141.1",
     "openai>=3.16.2",
-    "pathlib>=1.0.1",
     "pydantic>=2.13.5",
     "sentence-transformers>=6.0.1",
     "uvicorn>=0.53.0",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.16.10",
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

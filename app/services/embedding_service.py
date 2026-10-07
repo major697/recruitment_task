@@ -7,5 +7,4 @@ class EmbeddingService:
         self.sentence_transformer = sentence_transformer
 
     def embedding_text(self, text: list[str]) -> np.ndarray:
-        encode_text = self.sentence_transformer.encode(inputs=text, normalize_embeddings=True)
-        return encode_text
+        return self.sentence_transformer.encode(inputs=text, normalize_embeddings=True).astype(np.float32)

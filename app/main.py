@@ -36,6 +36,7 @@ async def lifespan(app: FastAPI):
         similarity_text_service=similarity_text_service,
         llm_service=llm_service
     )
+    similarity_text_service.build_index()
     yield
     app.state.container.openai.close()
 
@@ -48,7 +49,7 @@ async def health() -> dict[str, str]:
 
 
 @app.post("/ask", description="Ask LLM")
-async def ask_question(payload: Annotated[
+def ask_question(payload: Annotated[
         AskRequestSchema,
         Body(examples=[{"query": "How can I return a purchased product?"}]),
     ],
@@ -59,8 +60,8 @@ async def ask_question(payload: Annotated[
 
         similarity_text = similarity_text_service.get_similarity_file_text(query=payload.query)
 
-        # if similarity_text is None:
-        #     raise HTTPException(status_code=404, detail="No documents information.")
+        if similarity_text is None:
+            raise HTTPException(status_code=404, detail="No documents information.")
 
-        # generated_answer = llm_service.generate_answer(query=payload.query, similarity_text=similarity_text)
-        # return AskResponseSchema(answer=generated_answer.answer, document_name=generated_answer.document_name)
+        generated_answer = llm_service.generate_answer(query=payload.query, similarity_text=similarity_text)
+        return AskResponseSchema(answer=generated_answer.answer, document_name=generated_answer.document_name)

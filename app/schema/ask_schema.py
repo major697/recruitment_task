@@ -10,8 +10,3 @@ class AskResponseSchema(BaseModel):
     document_name: str = Field(
         description="Name of the source file from which the context was retrieved"
     )
-
-class ChunkSimilaritySchema(BaseModel):
-    embedding: float
-    text: str
-    file_name: str
